@@ -325,7 +325,7 @@ public class FunctionCodegen {
             boolean isConstructor = "<init>".equals(jvmSignature.getName());
             if(!isStatic && !isConstructor)
                 descriptor = descriptor.replace("(","(L" + ownerInternalName + ";");
-            final MethodVisitor mv = v.newMethod(null, flags | (isConstructor ? 0 : ACC_STATIC), isConstructor ? "<init>" : jvmSignature.getName() + JvmAbi.DEFAULT_PARAMS_IMPL_SUFFIX, descriptor, null, null);
+            final MethodVisitor mv = v.newMethod(null, flags | (isConstructor ? 0 : ACC_STATIC | ACC_SYNTHETIC), isConstructor ? "<init>" : jvmSignature.getName() + JvmAbi.DEFAULT_PARAMS_IMPL_SUFFIX, descriptor, null, null);
             InstructionAdapter iv = new InstructionAdapter(mv);
             if (v.generateCode() == ClassBuilder.Mode.STUBS) {
                 StubCodegen.generateStubCode(mv);

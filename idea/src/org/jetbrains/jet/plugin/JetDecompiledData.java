@@ -136,7 +136,8 @@ public class JetDecompiledData {
                 project,
                 JetSemanticServices.createSemanticServices(project),
                 trace);
-        ClsFileImpl clsFile = (ClsFileImpl) PsiManager.getInstance(project).findFile(file);
+        PsiManager psiManager = PsiManager.getInstance(project);
+        ClsFileImpl clsFile = (ClsFileImpl) psiManager.findFile(file);
         assert clsFile != null;
         builder.append(PsiBundle.message("psi.decompiled.text.header"));
         builder.append("\n\n");
@@ -183,7 +184,7 @@ public class JetDecompiledData {
         }
 
         myText = builder.toString();
-        myJetFile = (JetFile) PsiFileFactory.getInstance(project).createFileFromText("", JetLanguage.INSTANCE, myText);
+        myJetFile = (JetFile) new JetClassFileViewProvider2(psiManager, file, myText).getPsi(JetLanguage.INSTANCE);
         for (Map.Entry<PsiElement, TextRange> clsMemberToRange : clsMembersToRanges.entrySet()) {
             PsiElement clsMember = clsMemberToRange.getKey();
             assert clsMember instanceof ClsElementImpl;
