@@ -33,6 +33,7 @@ import org.jetbrains.jet.lang.psi.JetFile;
 import org.jetbrains.jet.lang.psi.JetImportDirective;
 import org.jetbrains.jet.lang.psi.JetQualifiedExpression;
 import org.jetbrains.jet.lang.resolve.DescriptorUtils;
+import org.jetbrains.jet.lang.resolve.FqName;
 import org.jetbrains.jet.plugin.completion.JetLookupObject;
 import org.jetbrains.jet.plugin.quickfix.ImportClassHelper;
 
@@ -121,7 +122,7 @@ public class JetFunctionInsertHandler implements InsertHandler<LookupElement> {
 
                         final JetFile file = (JetFile) context.getFile();
                         SimpleFunctionDescriptor functionDescriptor = (SimpleFunctionDescriptor) descriptor;
-                        final String fqn = DescriptorUtils.getFQName(functionDescriptor);
+                        final FqName fqn = DescriptorUtils.getFQName(functionDescriptor);
 
                         // Don't insert import for qualified expression if don't try to insert extension function
                         if (PsiTreeUtil.getParentOfType(element, JetQualifiedExpression.class) != null &&
@@ -134,7 +135,7 @@ public class JetFunctionInsertHandler implements InsertHandler<LookupElement> {
                             ApplicationManager.getApplication().runWriteAction(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ImportClassHelper.addImportDirective(fqn, file);
+                                    ImportClassHelper.addImportDirective(fqn.getFqName(), file);
                                 }
                             });
                         }
