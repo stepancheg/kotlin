@@ -17,7 +17,6 @@
 package org.jetbrains.jet.codegen;
 
 import org.jetbrains.jet.lang.psi.JetFile;
-import org.jetbrains.jet.lang.psi.JetPsiUtil;
 import org.jetbrains.jet.lang.resolve.FqName;
 
 import javax.inject.Inject;
@@ -61,7 +60,7 @@ public class ClassFileFactory {
 
     NamespaceCodegen forNamespace(JetFile file) {
         assert !isDone : "Already done!";
-        FqName fqName = JetPsiUtil.getFQName(file);
+        FqName fqName = file.getNamespaceHeaderFqName();
         NamespaceCodegen codegen = ns2codegen.get(fqName);
         if (codegen == null) {
             final ClassBuilder builder = newVisitor(NamespaceCodegen.getJVMClassName(fqName, true) + ".class");

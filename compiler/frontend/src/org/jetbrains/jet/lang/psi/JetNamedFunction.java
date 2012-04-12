@@ -106,7 +106,7 @@ public class JetNamedFunction extends JetFunction implements StubBasedPsiElement
         PsiElement parent = getParent();
         if (parent instanceof JetFile) {
             JetFile jetFile = (JetFile) parent;
-            final FqName fileFQN = JetPsiUtil.getFQName(jetFile);
+            final FqName fileFQN = jetFile.getNamespaceHeaderFqName();
             return fileFQN.child(getName());
         }
 

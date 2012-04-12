@@ -40,7 +40,6 @@ import org.jetbrains.jet.codegen.NamespaceCodegen;
 import org.jetbrains.jet.di.InjectorForJetTypeMapper;
 import org.jetbrains.jet.lang.psi.JetClassOrObject;
 import org.jetbrains.jet.lang.psi.JetFile;
-import org.jetbrains.jet.lang.psi.JetPsiUtil;
 import org.jetbrains.jet.plugin.project.WholeProjectAnalyzerFacade;
 
 import java.util.*;
@@ -137,10 +136,10 @@ public class JetPositionManager implements PositionManager {
                 else {
                     JetFile namespace = PsiTreeUtil.getParentOfType(sourcePosition.getElementAt(), JetFile.class);
                     if (namespace != null) {
-                        names.add(NamespaceCodegen.getJVMClassName(JetPsiUtil.getFQName(namespace), true));
+                        names.add(NamespaceCodegen.getJVMClassName(namespace.getNamespaceHeaderFqName(), true));
                     }
                     else {
-                        names.add(NamespaceCodegen.getJVMClassName(JetPsiUtil.getFQName(file), true));
+                        names.add(NamespaceCodegen.getJVMClassName(file.getNamespaceHeaderFqName(), true));
                     }
                 }
             }

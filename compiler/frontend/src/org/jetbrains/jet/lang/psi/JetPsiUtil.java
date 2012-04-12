@@ -130,20 +130,6 @@ public class JetPsiUtil {
         }
     }
 
-    private static FqName getFQName(JetNamespaceHeader header) {
-        StringBuilder builder = new StringBuilder();
-        for (JetSimpleNameExpression nameExpression : header.getParentNamespaceNames()) {
-            builder.append(nameExpression.getReferencedName());
-            builder.append(".");
-        }
-        builder.append(header.getName());
-        return new FqName(builder.toString());
-    }
-
-    public static FqName getFQName(JetFile file) {
-        return getFQName(file.getNamespaceHeader());
-    }
-
     @Nullable
     public static FqName getFQName(JetNamedDeclaration namedDeclaration) {
         if (namedDeclaration instanceof JetObjectDeclarationName) {
@@ -168,7 +154,7 @@ public class JetPsiUtil {
 
         FqName firstPart = null;
         if (parent instanceof JetFile) {
-            firstPart = getFQName((JetFile) parent);
+            firstPart = ((JetFile) parent).getNamespaceHeaderFqName();
         }
         else if (parent instanceof JetNamedDeclaration) {
             firstPart = getFQName((JetNamedDeclaration) parent);

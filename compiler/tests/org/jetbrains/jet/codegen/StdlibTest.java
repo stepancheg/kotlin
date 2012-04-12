@@ -17,8 +17,6 @@
 package org.jetbrains.jet.codegen;
 
 import org.jetbrains.jet.codegen.forTestCompile.ForTestCompileRuntime;
-import org.jetbrains.jet.compiler.CompileEnvironment;
-import org.jetbrains.jet.lang.psi.JetPsiUtil;
 
 import java.io.File;
 import java.lang.annotation.*;
@@ -148,7 +146,7 @@ public class StdlibTest extends CodegenTestCase {
         GeneratedClassLoader loader = createClassLoader(codegens);
 
         try {
-            String fqName = NamespaceCodegen.getJVMClassName(JetPsiUtil.getFQName(myFile), true).replace("/", ".");
+            String fqName = NamespaceCodegen.getJVMClassName(myFile.getNamespaceHeaderFqName(), true).replace("/", ".");
             Class<?> namespaceClass = loader.loadClass(fqName);
             Method method = namespaceClass.getMethod("box", Method.class);
             method.setAccessible(true);

@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jet.codegen.ClassFileFactory;
 import org.jetbrains.jet.codegen.GeneratedClassLoader;
 import org.jetbrains.jet.lang.psi.JetFile;
-import org.jetbrains.jet.lang.psi.JetPsiUtil;
 import org.jetbrains.jet.lang.resolve.FqName;
 import org.jetbrains.jet.lang.resolve.java.CompilerDependencies;
 import org.jetbrains.jet.lang.resolve.java.JvmAbi;
@@ -192,7 +191,7 @@ public class CompileEnvironment {
         FqName mainClass = null;
         for (JetFile file : environment.getSourceFiles()) {
             if (JetMainDetector.hasMain(file.getDeclarations())) {
-                FqName fqName = JetPsiUtil.getFQName(file);
+                FqName fqName = file.getNamespaceHeaderFqName();
                 mainClass = fqName.child(JvmAbi.PACKAGE_CLASS);
                 break;
             }

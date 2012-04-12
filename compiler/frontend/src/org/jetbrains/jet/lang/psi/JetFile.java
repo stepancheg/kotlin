@@ -21,6 +21,7 @@ package org.jetbrains.jet.lang.psi;
 
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.stubs.StubElement;
@@ -28,6 +29,7 @@ import com.intellij.psi.stubs.StubTree;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jet.JetNodeTypes;
+import org.jetbrains.jet.lang.resolve.FqName;
 import org.jetbrains.jet.plugin.JetFileType;
 import org.jetbrains.jet.plugin.JetLanguage;
 
@@ -59,6 +61,18 @@ public class JetFile extends PsiFileBase {
     @NotNull
     public JetNamespaceHeader getNamespaceHeader() {
         return (JetNamespaceHeader) getNode().findChildByType(JetNodeTypes.NAMESPACE_HEADER).getPsi();
+    }
+
+    private static final Key<FqName> FQ_NAME_KEY = Key.create(FqName.class.getSimpleName());
+
+    @NotNull
+    public FqName getNamespaceHeaderFqName() {
+        FqName fqName = getUserData(FQ_NAME_KEY);
+        if (fqName == null) {
+            fqName = getNamespaceHeader().getFqName();
+            putUserDataIfAbsent(FQ_NAME_KEY, fqName);
+        }
+        return fqName;
     }
 
     @NotNull

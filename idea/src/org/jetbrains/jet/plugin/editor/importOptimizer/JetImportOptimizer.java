@@ -176,7 +176,7 @@ public class JetImportOptimizer implements ImportOptimizer {
     @Nullable
     public static FqName getElementUsageFQName(PsiElement element) {
         if (element instanceof JetFile) {
-            return JetPsiUtil.getFQName((JetFile) element);
+            return ((JetFile) element).getNamespaceHeaderFqName();
         }
 
         if (element instanceof JetNamedDeclaration) {

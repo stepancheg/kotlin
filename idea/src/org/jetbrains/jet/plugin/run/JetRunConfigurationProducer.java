@@ -28,7 +28,6 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jet.lang.psi.JetFile;
-import org.jetbrains.jet.lang.psi.JetPsiUtil;
 import org.jetbrains.jet.lang.resolve.FqName;
 import org.jetbrains.jet.lang.resolve.java.JvmAbi;
 import org.jetbrains.jet.plugin.JetMainDetector;
@@ -72,7 +71,7 @@ public class JetRunConfigurationProducer extends RuntimeConfigurationProducer im
             JetFile jetFile = (JetFile) psiFile;
             if (JetMainDetector.hasMain(jetFile.getDeclarations())) {
                 mySourceElement = jetFile;
-                FqName fqName = JetPsiUtil.getFQName(jetFile);
+                FqName fqName = jetFile.getNamespaceHeaderFqName();
                 return fqName.child(JvmAbi.PACKAGE_CLASS);
             }
         }

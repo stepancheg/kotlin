@@ -17,7 +17,6 @@
 package org.jetbrains.jet.plugin.quickfix;
 
 import com.intellij.psi.PsiElement;
-import com.intellij.usages.impl.rules.NonCodeUsageGroupingRule;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jet.lang.DefaultModuleConfiguration;
@@ -135,7 +134,7 @@ public class ImportInsertHelper {
             importPath = new ImportPath(withoutJavaRoot, importPath.isAllUnder());
         }
 
-        if (isImportedByDefault(importPath, null, JetPsiUtil.getFQName(file))) {
+        if (isImportedByDefault(importPath, null, file.getNamespaceHeaderFqName())) {
             return false;
         }
 

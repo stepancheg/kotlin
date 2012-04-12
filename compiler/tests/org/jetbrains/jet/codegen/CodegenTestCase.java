@@ -23,7 +23,6 @@ import org.jetbrains.jet.JetLiteFixture;
 import org.jetbrains.jet.analyzer.AnalyzeExhaust;
 import org.jetbrains.jet.lang.cfg.pseudocode.JetControlFlowDataTraceFactory;
 import org.jetbrains.jet.lang.psi.JetFile;
-import org.jetbrains.jet.lang.psi.JetPsiUtil;
 import org.jetbrains.jet.lang.resolve.java.AnalyzerFacadeForJVM;
 import org.jetbrains.jet.lang.resolve.java.CompilerSpecialMode;
 import org.jetbrains.jet.parsing.JetParsingTest;
@@ -107,7 +106,7 @@ public abstract class CodegenTestCase extends JetLiteFixture {
         GeneratedClassLoader loader = createClassLoader(codegens);
 
         try {
-            String fqName = NamespaceCodegen.getJVMClassName(JetPsiUtil.getFQName(myFile), true).replace("/", ".");
+            String fqName = NamespaceCodegen.getJVMClassName(myFile.getNamespaceHeaderFqName(), true).replace("/", ".");
             Class<?> namespaceClass = loader.loadClass(fqName);
             Method method = namespaceClass.getMethod("box");
             return (String) method.invoke(null);
@@ -144,7 +143,7 @@ public abstract class CodegenTestCase extends JetLiteFixture {
     }
 
     protected Class loadRootNamespaceClass(@NotNull ClassFileFactory state) {
-        String fqName = NamespaceCodegen.getJVMClassName(JetPsiUtil.getFQName(myFile), true).replace("/", ".");
+        String fqName = NamespaceCodegen.getJVMClassName(myFile.getNamespaceHeaderFqName(), true).replace("/", ".");
         try {
             return createClassLoader(state).loadClass(fqName);
         } catch (ClassNotFoundException e) {

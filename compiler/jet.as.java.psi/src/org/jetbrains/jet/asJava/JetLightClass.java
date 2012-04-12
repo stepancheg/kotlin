@@ -47,7 +47,6 @@ import org.jetbrains.jet.codegen.ClassBuilderFactory;
 import org.jetbrains.jet.codegen.CompilationErrorHandler;
 import org.jetbrains.jet.codegen.GenerationState;
 import org.jetbrains.jet.lang.psi.JetFile;
-import org.jetbrains.jet.lang.psi.JetPsiUtil;
 import org.jetbrains.jet.lang.resolve.FqName;
 import org.jetbrains.jet.lang.resolve.java.*;
 import org.jetbrains.jet.plugin.JetLanguage;
@@ -135,7 +134,7 @@ public class JetLightClass extends AbstractLightClass implements JetJavaMirrorMa
     }
 
     private PsiJavaFileStub calcStub() {
-        final PsiJavaFileStubImpl answer = new PsiJavaFileStubImpl(JetPsiUtil.getFQName(file).getFqName(), true);
+        final PsiJavaFileStubImpl answer = new PsiJavaFileStubImpl(file.getNamespaceHeaderFqName().getFqName(), true);
         final Project project = getProject();
 
         final Stack<StubElement> stubStack = new Stack<StubElement>();

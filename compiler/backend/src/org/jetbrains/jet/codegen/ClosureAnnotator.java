@@ -83,7 +83,7 @@ public class ClosureAnnotator {
 
     private void mapFilesToNamespaces(Collection<JetFile> files) {
         for (JetFile file : files) {
-            FqName fqName = JetPsiUtil.getFQName(file);
+            FqName fqName = file.getNamespaceHeaderFqName();
             namespaceName2Files.putValue(fqName, file);
         }
     }
@@ -170,7 +170,7 @@ public class ClosureAnnotator {
 
         @Override
         public void visitJetFile(JetFile file) {
-            nameStack.push(JetPsiUtil.getFQName(file).getFqName().replace('.', '/'));
+            nameStack.push(file.getNamespaceHeaderFqName().getFqName().replace('.', '/'));
             file.acceptChildren(this);
             nameStack.pop();
         }

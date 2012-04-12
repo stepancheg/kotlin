@@ -17,6 +17,7 @@
 package org.jetbrains.jet.lang.psi;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceService;
@@ -24,6 +25,7 @@ import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jet.JetNodeTypes;
+import org.jetbrains.jet.lang.resolve.FqName;
 
 import java.util.List;
 
@@ -69,6 +71,31 @@ public class JetNamespaceHeader extends JetReferenceExpression {
         }
 
         return lastPart.getIdentifier();
+    }
+
+
+    private static final Key<FqName> FQ_NAME_KEY = Key.create(FqName.class.getSimpleName());
+
+    @NotNull
+    public FqName getFqName() {
+        FqName fqName = getUserData(FQ_NAME_KEY);
+        if (fqName == null) {
+            fqName = getFqNameImpl();
+            putUserDataIfAbsent(FQ_NAME_KEY, fqName);
+        }
+        return fqName;
+    }
+
+    @NotNull
+    private FqName getFqNameImpl() {
+        StringBuilder builder = new StringBuilder();
+        for (JetSimpleNameExpression nameExpression : getParentNamespaceNames()) {
+            // TODO: we can cache parents right here
+            builder.append(nameExpression.getReferencedName());
+            builder.append(".");
+        }
+        builder.append(getName());
+        return new FqName(builder.toString());
     }
 
     @Override

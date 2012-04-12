@@ -89,7 +89,7 @@ public class JetSourceNavigationHelper {
     @Nullable
     private static Tuple2<BindingContext, NamespaceDescriptor> getBindingContextAndNamespaceDescriptor(@NotNull JetDeclaration declaration) {
         JetFile file = (JetFile) declaration.getContainingFile();
-        return getBindingContextAndClassOrNamespaceDescriptor(BindingContext.FQNAME_TO_NAMESPACE_DESCRIPTOR, declaration, JetPsiUtil.getFQName(file));
+        return getBindingContextAndClassOrNamespaceDescriptor(BindingContext.FQNAME_TO_NAMESPACE_DESCRIPTOR, declaration, file.getNamespaceHeaderFqName());
     }
 
     @Nullable
