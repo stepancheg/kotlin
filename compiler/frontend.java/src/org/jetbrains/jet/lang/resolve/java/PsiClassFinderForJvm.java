@@ -46,7 +46,7 @@ public class PsiClassFinderForJvm implements PsiClassFinder {
 
     private AltClassFinder altClassFinder;
     private GlobalSearchScope javaSearchScope;
-    private JavaPsiFacade javaFacade;
+    private JavaPsiFacadeKotlinHacks javaPsiFacadeKotlin;
 
     @Inject
     public void setProject(@NotNull Project project) {
@@ -67,14 +67,14 @@ public class PsiClassFinderForJvm implements PsiClassFinder {
                 return myBaseScope.contains(file) && file.getFileType() != JetFileType.INSTANCE;
             }
         };
-        this.javaFacade = JavaPsiFacade.getInstance(project);
+        this.javaPsiFacadeKotlin = new JavaPsiFacadeKotlinHacks(project);
     }
 
 
     @Override
     @Nullable
     public PsiClass findPsiClass(@NotNull FqName qualifiedName, @NotNull RuntimeClassesHandleMode runtimeClassesHandleMode) {
-        PsiClass original = javaFacade.findClass(qualifiedName.getFqName(), javaSearchScope);
+        PsiClass original = javaPsiFacadeKotlin.findClass(qualifiedName.getFqName(), javaSearchScope);
         PsiClass altClass = altClassFinder.findClass(qualifiedName);
         PsiClass result = original;
         if (altClass != null) {
@@ -122,7 +122,7 @@ public class PsiClassFinderForJvm implements PsiClassFinder {
     @Override
     @Nullable
     public PsiPackage findPsiPackage(@NotNull FqName qualifiedName) {
-        return javaFacade.findPackage(qualifiedName.getFqName());
+        return javaPsiFacadeKotlin.findPackage(qualifiedName.getFqName());
     }
 
 
