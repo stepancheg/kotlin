@@ -83,37 +83,36 @@ ${searchBox()}
     document.writeln('<A HREF="${relativePrefix()}allclasses-noframe.html"><B>All Classes</B></A>');
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="${relativePrefix()}allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
+</SCRIPT>""")
+        noscript {
+            a(href="${relativePrefix()}allclasses-noframe.html", content="All Classes")
+        }
+        println("""
 </FONT></TD>
 </TR>
 </TABLE>
-<A NAME="skip-navbar_top"></A>
-<!-- ========= END OF TOP NAVBAR ========= -->
-
-<HR>
-<FONT SIZE="-1">""")
-
-        for (a in pkg.annotations) {
-            val url = a.url
-            if (url != null) {
-                println("""<A HREF="$url?is-external=true" title="class or interface in ${a.packageName}">@${a.simpleName}</A>""")
+""")
+        println("<A NAME='skip-navbar_top'></A>")
+        comment("========= END OF TOP NAVBAR =========")
+        hr()
+        font(size="-1") {
+            for (a in pkg.annotations) {
+                val url = a.url
+                if (url != null) {
+                    a(href="$url?is-external=true", title="class or interface in ${a.packageName}", content="@${a.simpleName}")
+                }
             }
         }
-        println("""</FONT><H2>
-Package ${pkg.name}
-</H2>
-${pkg.description(this)}
-<P>
-<B>See:</B>
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#package_description"><B>Description</B></A>
-<P>
-""")
+        h2("Package ${pkg.name}")
+        text("${pkg.description(this)}")
+        p()
+        b("See:")
+        br()
+        nbsp(10)
+        a(href="#package_description") {
+            b("Description")
+        }
+        p()
 
         printClasses("trait", "Traits")
         printClasses("class", "Classes")
@@ -141,19 +140,24 @@ ${pkg.detailedDescription(this)}
             val group = e.key ?: "Other"
             val list = e.value
             if (list != null) {
-                println(""" <h3>$group</h3>
-
- <ul>""")
-                for (c in list) {
-                    println(""" <li><A HREF="${pkg.nameAsRelativePath}${c.nameAsPath}.html" title="class in ${pkg.name}"><CODE>${c.simpleName}</CODE></A>""")
+                h3(group)
+                ul {
+                    for (c in list) {
+                        li {
+                            a(href="${pkg.nameAsRelativePath}${c.nameAsPath}.html", title="class in ${pkg.name}") {
+                                code(c.simpleName)
+                            }
+                        }
+                    }
                 }
-                println("""
- </ul>""")
             }
         }
-        println("""<P>""")
+
+        p()
 
         printFunctionDetail(pkg.packageFunctions())
+
+        p()
 
         println("""
 

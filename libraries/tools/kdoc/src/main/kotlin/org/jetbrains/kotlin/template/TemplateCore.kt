@@ -63,9 +63,96 @@ abstract class TextTemplate() : TemplateSupport(), Printer {
 
     override fun print(value: Any) = printer.print(value)
 
+    fun println() {
+        print(newline)
+    }
+
     fun println(value: Any) {
         print(value)
-        print(newline)
+        println()
+    }
+
+    fun text(text: String) {
+        println(text) // TODO: escape
+    }
+
+    fun tag(name: String, content: TextTemplate.() -> Unit) {
+        println("<$name>")
+        content()
+        println("</$name>")
+    }
+
+    fun tag(name: String, content: String) = tag(name) {
+        text(content)
+    }
+
+    fun tag(name: String) {
+        println("<$name>")
+    }
+
+    fun h2(content: TextTemplate.() -> Unit) = tag("H2", content)
+
+    fun h2(content: String) = tag("H2", content)
+
+    fun h3(content: TextTemplate.() -> Unit) = tag("H3", content)
+
+    fun h3(content: String) = tag("H3", content)
+
+    fun ul(content: TextTemplate.() -> Unit) = tag("UL", content)
+
+    fun ul(content: String) = tag("UL", content)
+
+    fun li(content: TextTemplate.() -> Unit) = tag("LI", content)
+
+    fun li(content: String) = tag("LI", content)
+
+    fun b(content: TextTemplate.() -> Unit) = tag("B", content)
+
+    fun b(content: String) = tag("B", content)
+
+    fun code(content: TextTemplate.() -> Unit) = tag("CODE", content)
+
+    fun code(content: String) = tag("CODE", content)
+
+    fun noscript(content: TextTemplate.() -> Unit) = tag("NOSCRIPT", content)
+
+    fun hr() = tag("HR")
+
+    fun p() = tag("P")
+
+    fun br() = tag("BR")
+
+    fun a(href: String, title: String? = null, content: TextTemplate.() -> Unit) {
+        print("<A HREF='$href'") // TODO: escape
+        if (title != null) {
+            print("title='$title'") // TODO: escape
+        }
+        print(">")
+        content()
+        print("</A>")
+        println()
+    }
+
+    fun a(href: String, title: String? = null, content: String) {
+        a(href, title) {
+            print(content)
+        }
+    }
+
+    fun font(size: String, content: TextTemplate.() -> Unit) {
+        print("<FONT SIZE='$size'>")
+        content()
+        print("</FONT>")
+        println()
+    }
+
+    fun comment(comment: String) =
+        println("<!-- $comment -->") // TODO: escape
+
+    fun nbsp(count: Int = 1) {
+        for (i in 0..count) {
+            print("&nbsp")
+        }
     }
 
     fun renderToText(): String {
