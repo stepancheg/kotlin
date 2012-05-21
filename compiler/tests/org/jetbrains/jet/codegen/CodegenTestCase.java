@@ -16,6 +16,7 @@
 
 package org.jetbrains.jet.codegen;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,6 +31,7 @@ import org.jetbrains.jet.parsing.JetParsingTest;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -97,8 +99,12 @@ public abstract class CodegenTestCase extends JetLiteFixture {
     }
 
     protected void blackBoxFile(String filename) {
+        blackBoxFile(filename, "OK");
+    }
+
+    protected void blackBoxFile(String filename, @Nullable Object expectedValue) {
         loadFile(filename);
-        String actual;
+        Object actual;
         try {
             actual = blackBox();
         } catch (NoClassDefFoundError e) {
@@ -108,21 +114,30 @@ public abstract class CodegenTestCase extends JetLiteFixture {
             System.out.println(generateToText());
             throw new RuntimeException(e);
         }
-        if (!"OK".equals(actual)) {
+        if (!Objects.equal(expectedValue, actual)) {
             System.out.println(generateToText());
         }
-        assertEquals("OK", actual);
+        assertEquals(expectedValue, actual);
     }
 
-    protected String blackBox() throws Exception {
+    protected Object blackBox() throws Exception {
         ClassFileFactory codegens = generateClassesInFile();
         GeneratedClassLoader loader = createClassLoader(codegens);
 
         try {
-            String fqName = NamespaceCodegen.getJVMClassNameForKotlinNs(JetPsiUtil.getFQName(myFile)).getFqName().getFqName();
-            Class<?> namespaceClass = loader.loadClass(fqName);
-            Method method = namespaceClass.getMethod("box");
-            return (String) method.invoke(null);
+            if (myFile.isScript()) {
+                Class<?> scriptClass = loader.loadClass("Script");
+                Object scriptInstance = scriptClass.newInstance();
+                Field field = scriptClass.getDeclaredField("rv");
+                field.setAccessible(true);
+                return field.get(scriptInstance);
+            }
+            else {
+                String fqName = NamespaceCodegen.getJVMClassNameForKotlinNs(JetPsiUtil.getFQName(myFile)).getFqName().getFqName();
+                Class<?> namespaceClass = loader.loadClass(fqName);
+                Method method = namespaceClass.getMethod("box");
+                return method.invoke(null);
+            }
         } finally {
            loader.dispose();
         }
